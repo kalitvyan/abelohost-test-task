@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App;
 
 use App\Database\Database;
+use App\Database\Migrator;
 
 final class Container
 {
     private ?Database $database = null;
+    private ?Migrator $migrator = null;
 
     public function __construct(private readonly string $basePath)
     {
@@ -25,6 +27,11 @@ final class Container
         $config = $this->config('database');
 
         return $this->database ??= Database::connect($config);
+    }
+
+    public function migrator(): Migrator
+    {
+        return $this->migrator ??= new Migrator($this->database(), $this->path('database/migrations'));
     }
 
     /**

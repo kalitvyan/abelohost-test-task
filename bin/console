@@ -1,0 +1,46 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/** @var App\Container $app */
+$app = require __DIR__ . '/../bootstrap/app.php';
+
+$printMigrated = static function (array $names): void {
+    if ($names === []) {
+        echo "Nothing to migrate.\n";
+
+        return;
+    }
+
+    foreach ($names as $name) {
+        echo "Migrated: {$name}\n";
+    }
+};
+
+/** @var array<string, callable(): void> $commands */
+$commands = [
+    'migrate' => static function () use ($app, $printMigrated): void {
+        $printMigrated($app->migrator()->migrate());
+    },
+    'migrate:fresh' => static function () use ($app, $printMigrated): void {
+        $app->migrator()->dropAllTables();
+        echo "Dropped all tables.\n";
+        $printMigrated($app->migrator()->migrate());
+    },
+];
+
+$name = $argv[1] ?? null;
+
+if ($name === null || !isset($commands[$name])) {
+    fwrite(STDERR, "Usage: bin/console <command>\nAvailable: " . implode(', ', array_keys($commands)) . "\n");
+    exit(1);
+}
+
+try {
+    $commands[$name]();
+    exit(0);
+} catch (Throwable $e) {
+    fwrite(STDERR, sprintf("[%s] %s\n", $e::class, $e->getMessage()));
+    exit(1);
+}
