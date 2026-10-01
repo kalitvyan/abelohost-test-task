@@ -11,6 +11,7 @@ use App\Http\Controller\HomeController;
 use App\Http\Controller\PostController;
 use App\Http\Kernel;
 use App\Http\Routing\Router;
+use App\View\SmartyRenderer;
 use LogicException;
 
 final class Container
@@ -21,6 +22,7 @@ final class Container
     private ?Database $database = null;
     private ?Migrator $migrator = null;
     private ?Router $router = null;
+    private ?SmartyRenderer $view = null;
     private ?Kernel $kernel = null;
 
     public function __construct(private readonly string $basePath)
@@ -66,12 +68,34 @@ final class Container
         return $this->router;
     }
 
+    public function view(): SmartyRenderer
+    {
+        if ($this->view === null) {
+            $app = $this->config('app');
+
+            $this->view = new SmartyRenderer(
+                templateDir: $this->path('resources/templates'),
+                compileDir: $this->path('var/cache/smarty'),
+                router: $this->router(),
+                debug: (bool) $app['debug'],
+            );
+
+            $this->view->share('app', [
+                'name' => (string) $app['name'],
+                'year' => date('Y'),
+            ]);
+        }
+
+        return $this->view;
+    }
+
     public function kernel(): Kernel
     {
         return $this->kernel ??= new Kernel(
-            $this->router(),
-            fn (string $class): object => $this->controller($class),
-            (bool) $this->config('app')['debug'],
+            router: $this->router(),
+            resolveController: fn (string $class): object => $this->controller($class),
+            view: $this->view(),
+            debug: (bool) $this->config('app')['debug'],
         );
     }
 
@@ -81,7 +105,7 @@ final class Container
     private function controller(string $class): object
     {
         return match ($class) {
-            HomeController::class     => new HomeController(),
+            HomeController::class     => new HomeController($this->view()),
             CategoryController::class => new CategoryController(),
             PostController::class     => new PostController(),
             default                   => throw new LogicException("Controller {$class} is not registered"),

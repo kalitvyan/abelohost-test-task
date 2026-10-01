@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{block name=title}{$app.name}{/block}</title>
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="site-header__logo" href="{url name='home'}">{$app.name}</a>
+    </div>
+  </header>
+
+  <main class="site-main container">
+    {block name=content}{/block}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">&copy; {$app.year} {$app.name}</div>
+  </footer>
+</body>
+</html>
