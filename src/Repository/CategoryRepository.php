@@ -74,4 +74,14 @@ final class CategoryRepository
             $groups,
         ));
     }
+
+    public function findBySlug(string $slug): ?Category
+    {
+        $row = $this->db->fetchOne(
+            'SELECT id, slug, name, description FROM categories WHERE slug = ?',
+            [$slug],
+        );
+
+        return $row === null ? null : Category::fromRow($row);
+    }
 }
