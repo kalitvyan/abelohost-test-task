@@ -131,7 +131,7 @@ final class Container
     private function controller(string $class): object
     {
         return match ($class) {
-            HomeController::class     => new HomeController(
+            HomeController::class => new HomeController(
                 $this->view(),
                 $this->categoryRepository(),
             ),
@@ -141,8 +141,11 @@ final class Container
                 $this->categoryRepository(),
                 $this->postRepository(),
             ),
-            PostController::class     => new PostController(),
-            default                   => throw new LogicException("Controller {$class} is not registered"),
+            PostController::class => new PostController(
+                $this->view(),
+                $this->postRepository(),
+            ),
+            default => throw new LogicException("Controller {$class} is not registered"),
         };
     }
 }

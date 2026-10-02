@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{block name=title}{$app.name}{/block}</title>
   <link rel="stylesheet" href="/assets/css/app.css">
+  {block name=head}{/block}
 </head>
 <body>
   <header class="site-header">
