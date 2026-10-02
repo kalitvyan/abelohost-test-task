@@ -3,3 +3,4 @@ vendor
 var
 public/assets/css
 node_modules
+/public/uploads/

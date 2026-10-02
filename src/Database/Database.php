@@ -7,6 +7,7 @@ namespace App\Database;
 use PDO;
 use PDOStatement;
 use Throwable;
+use InvalidArgumentException;
 
 final class Database
 {
@@ -145,5 +146,52 @@ final class Database
         $statement->execute();
 
         return $statement;
+    }
+
+    /**
+     * @param list<array<string, scalar|null>> $rows rows with identical keys in identical order
+     */
+    public function insertMany(string $table, array $rows, int $chunkSize = 100): void
+    {
+        if ($rows === []) {
+            return;
+        }
+
+        $columns = array_keys($rows[0]);
+        $columnList = implode(', ', array_map(self::quoteIdentifier(...), $columns));
+        $rowPlaceholder = '(' . implode(', ', array_fill(0, count($columns), '?')) . ')';
+
+        foreach (array_chunk($rows, $chunkSize) as $chunk) {
+            $params = [];
+
+            foreach ($chunk as $row) {
+                if (array_keys($row) !== $columns) {
+                    throw new InvalidArgumentException(
+                        'All rows must have the same columns in the same order',
+                    );
+                }
+
+                array_push($params, ...array_values($row));
+            }
+
+            $this->execute(
+                sprintf(
+                    'INSERT INTO %s (%s) VALUES %s',
+                    self::quoteIdentifier($table),
+                    $columnList,
+                    implode(', ', array_fill(0, count($chunk), $rowPlaceholder)),
+                ),
+                $params,
+            );
+        }
+    }
+
+    private static function quoteIdentifier(string $name): string
+    {
+        if (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $name) !== 1) {
+            throw new InvalidArgumentException("Invalid SQL identifier: {$name}");
+        }
+
+        return "`{$name}`";
     }
 }
