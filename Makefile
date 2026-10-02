@@ -1,7 +1,7 @@
 DC  = docker compose
 PHP = $(DC) exec php
 
-.PHONY: init up down restart logs sh install composer migrate fresh seed reset db
+.PHONY: init setup up down restart logs sh install composer migrate fresh db seed reset
 
 init:
 	@test -f .env || cp .env.example .env
@@ -40,3 +40,5 @@ reset: fresh seed
 
 db:
 	$(DC) exec mysql sh -c 'mysql -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE"'
+
+setup: up install reset
