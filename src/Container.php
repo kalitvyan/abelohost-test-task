@@ -6,6 +6,8 @@ namespace App;
 
 use App\Database\Database;
 use App\Database\Migrator;
+use App\Database\Seeder\BlogSeeder;
+use App\Database\Seeder\PlaceholderImage;
 use App\Http\Controller\CategoryController;
 use App\Http\Controller\HomeController;
 use App\Http\Controller\PostController;
@@ -56,6 +58,15 @@ final class Container
     public function migrator(): Migrator
     {
         return $this->migrator ??= new Migrator($this->database(), $this->path('database/migrations'));
+    }
+
+    public function seeder(): BlogSeeder
+    {
+        return new BlogSeeder(
+            db: $this->database(),
+            images: new PlaceholderImage($this->path('public/uploads/posts'), '/uploads/posts'),
+            categoriesFile: $this->path('database/seeders/categories.php'),
+        );
     }
 
     public function router(): Router
