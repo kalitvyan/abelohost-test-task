@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace App\View;
 
 use App\Http\Routing\Router;
+use App\Support\Plural;
+use DateTimeImmutable;
+use DateTimeInterface;
+use DateTimeZone;
 use Smarty\Smarty;
 
 final class SmartyRenderer
@@ -15,6 +19,7 @@ final class SmartyRenderer
         string $templateDir,
         string $compileDir,
         Router $router,
+        DateTimeZone $timezone,
         bool $debug,
     ) {
         $this->smarty = new Smarty();
@@ -33,6 +38,21 @@ final class SmartyRenderer
 
                 return htmlspecialchars($router->url($name, $params, $query), ENT_QUOTES | ENT_HTML5, 'UTF-8');
             },
+        );
+
+        // {$post->publishedAt|date} → 05.03.2026; {$post->publishedAt|date:'c'} → ISO 8601 for <time datetime>
+        $this->smarty->registerPlugin(
+            Smarty::PLUGIN_MODIFIER,
+            'date',
+            static fn (DateTimeInterface $date, string $format = 'd.m.Y'): string
+                => DateTimeImmutable::createFromInterface($date)->setTimezone($timezone)->format($format),
+        );
+
+        // {$post->views|plural:'просмотр':'просмотра':'просмотров'}
+        $this->smarty->registerPlugin(
+            Smarty::PLUGIN_MODIFIER,
+            'plural',
+            static fn (int $n, string $one, string $few, string $many): string => Plural::ru($n, $one, $few, $many),
         );
     }
 

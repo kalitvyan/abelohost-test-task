@@ -8,6 +8,7 @@ use App\Database\Database;
 use App\Database\Migrator;
 use App\Database\Seeder\BlogSeeder;
 use App\Database\Seeder\PlaceholderImage;
+use App\Repository\CategoryRepository;
 use App\Http\Controller\CategoryController;
 use App\Http\Controller\HomeController;
 use App\Http\Controller\PostController;
@@ -26,6 +27,7 @@ final class Container
     private ?Router $router = null;
     private ?SmartyRenderer $view = null;
     private ?Kernel $kernel = null;
+    private ?CategoryRepository $categoryRepository = null;
 
     public function __construct(private readonly string $basePath)
     {
@@ -69,6 +71,11 @@ final class Container
         );
     }
 
+    public function categoryRepository(): CategoryRepository
+    {
+        return $this->categoryRepository ??= new CategoryRepository($this->database());
+    }
+
     public function router(): Router
     {
         if ($this->router === null) {
@@ -88,6 +95,7 @@ final class Container
                 templateDir: $this->path('resources/templates'),
                 compileDir: $this->path('var/cache/smarty'),
                 router: $this->router(),
+                timezone: new \DateTimeZone((string) $app['timezone']),
                 debug: (bool) $app['debug'],
             );
 
@@ -116,7 +124,7 @@ final class Container
     private function controller(string $class): object
     {
         return match ($class) {
-            HomeController::class     => new HomeController($this->view()),
+            HomeController::class     => new HomeController($this->view(), $this->categoryRepository()),
             CategoryController::class => new CategoryController(),
             PostController::class     => new PostController(),
             default                   => throw new LogicException("Controller {$class} is not registered"),
