@@ -1,0 +1,28 @@
+@use '../abstracts' as *;
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: space(2);
+  margin-top: space(12);
+
+  &__link {
+    @include pill;
+
+    min-width: 2.5rem;
+
+    &--current,
+    &--current:hover {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+      color: var(--color-accent-contrast);
+    }
+  }
+
+  &__gap {
+    padding-inline: space(1);
+    color: var(--color-muted);
+  }
+}

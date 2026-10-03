@@ -1,0 +1,38 @@
+@use '../abstracts' as *;
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    min-height: 3.5rem;
+  }
+
+  &__logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+}
+
+.site-main {
+  flex: 1;
+  padding-block: space(8) space(12);
+}
+
+.site-footer {
+  padding-block: space(6);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}

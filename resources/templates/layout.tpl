@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{block name=title}{$app.name}{/block}</title>
-  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="{asset path='/assets/css/app.css'}">
   {block name=head}{/block}
 </head>
 <body>
   <header class="site-header">
-    <div class="container">
+    <div class="container site-header__inner">
       <a class="site-header__logo" href="{url name='home'}">{$app.name}</a>
     </div>
   </header>

@@ -16,7 +16,8 @@
       {/if}
 
     </p>
-    <a href="{url name='home'}">На главную</a>
+
+    <a class="button" href="{url name='home'}">На главную</a>
 
     {if $details}
       <pre class="error-page__details">{$details}</pre>

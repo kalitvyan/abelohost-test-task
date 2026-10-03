@@ -1,0 +1,74 @@
+@use '../abstracts' as *;
+
+.post-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: $radius;
+  background: var(--color-surface);
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+  }
+
+  &__image-link {
+    display: block;
+    aspect-ratio: 1200 / 630;
+    background: var(--color-border);
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: space(3);
+    padding: space(4);
+  }
+
+  &__title {
+    font-size: 1.125rem;
+
+    a {
+      text-decoration: none;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+      }
+    }
+  }
+
+  &:hover &__title a {
+    color: var(--color-accent);
+  }
+
+  &__description {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--color-muted);
+    font-size: 0.9375rem;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  &__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: space(3);
+    margin-top: auto;
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+  }
+}

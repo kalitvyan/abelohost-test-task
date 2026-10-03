@@ -2,15 +2,18 @@ DC  = docker compose
 PHP = $(DC) exec php
 SASS = $(DC) run --rm sass
 
+SCSS_ENTRY = resources/scss/app.scss
+CSS_OUTPUT = public/assets/css/app.css
+
 .PHONY: init setup up down restart logs sh install composer migrate fresh db seed reset css css-watch
 
 setup: up install css reset
 
 css:
-	$(SASS) --style=compressed --no-source-map $(CSS)
+	$(SASS) --style=compressed --no-source-map $(SCSS_ENTRY):$(CSS_OUTPUT)
 
 css-watch:
-	$(SASS) --watch --style=expanded --embed-source-map $(CSS)
+	$(SASS) --watch --style=expanded --embed-source-map $(SCSS_ENTRY):$(CSS_OUTPUT)
 
 init:
 	@test -f .env || cp .env.example .env

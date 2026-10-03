@@ -1,0 +1,24 @@
+@use '../abstracts' as *;
+
+.category-section {
+  & + & {
+    margin-top: space(12);
+  }
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: space(4);
+    margin-bottom: space(6);
+  }
+
+  &__title a {
+    text-decoration: none;
+
+    &:hover {
+      color: var(--color-accent);
+    }
+  }
+}

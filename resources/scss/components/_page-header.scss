@@ -1,0 +1,12 @@
+@use '../abstracts' as *;
+
+.page-header {
+  margin-bottom: space(8);
+
+  &__description {
+    max-width: 65ch;
+    margin-top: space(3);
+    color: var(--color-muted);
+    font-size: 1.125rem;
+  }
+}

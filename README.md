@@ -31,6 +31,8 @@ make setup
 | `make db` | MySQL-консоль |
 | `make sh` | Shell в PHP-контейнере |
 | `make logs` | Логи контейнеров |
+| `make css` | Собрать CSS из SCSS (сжатый, без source map) |
+| `make css-watch` | Пересборка CSS при изменениях, с source map |
 
 Сидинг детерминирован: при одинаковом `--seed` генерируются одинаковые тексты, slug'и и распределение по категориям.
 

@@ -1,0 +1,9 @@
+@use '../abstracts' as *;
+
+.tag {
+  @include pill;
+
+  padding: space(1) space(3);
+  background: var(--color-surface);
+  font-size: 0.8125rem;
+}
