@@ -18,6 +18,7 @@ final class SmartyRenderer
     public function __construct(
         string $templateDir,
         string $compileDir,
+        string $publicDir,
         Router $router,
         DateTimeZone $timezone,
         bool $debug,
@@ -37,6 +38,19 @@ final class SmartyRenderer
                 unset($params['name'], $params['query']);
 
                 return htmlspecialchars($router->url($name, $params, $query), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            },
+        );
+
+        // {asset path='/assets/css/app.css'} → /assets/css/app.css?v=1712345678
+        $this->smarty->registerPlugin(
+            Smarty::PLUGIN_FUNCTION,
+            'asset',
+            static function (array $params) use ($publicDir): string {
+                $path = '/' . ltrim((string) ($params['path'] ?? throw new \InvalidArgumentException('{asset} requires "path"')), '/');
+                $file = $publicDir . $path;
+                $url = is_file($file) ? $path . '?v=' . filemtime($file) : $path;
+
+                return htmlspecialchars($url, ENT_QUOTES | ENT_HTML5, 'UTF-8');
             },
         );
 

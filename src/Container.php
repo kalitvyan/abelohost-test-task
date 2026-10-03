@@ -101,6 +101,7 @@ final class Container
             $this->view = new SmartyRenderer(
                 templateDir: $this->path('resources/templates'),
                 compileDir: $this->path('var/cache/smarty'),
+                publicDir: $this->path('public'),
                 router: $this->router(),
                 timezone: new \DateTimeZone((string) $app['timezone']),
                 debug: (bool) $app['debug'],

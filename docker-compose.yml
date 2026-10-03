@@ -44,5 +44,16 @@ services:
       retries: 20
       start_period: 20s
 
+  sass:
+    build:
+      context: .
+      dockerfile: docker/sass/Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    profiles: ["tools"]
+    volumes:
+      - ./:/var/www
+
 volumes:
   mysql-data:
